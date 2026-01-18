@@ -7,10 +7,10 @@ public class FoodItem
 	public double ItemPrice { get; set; }
 	public string Customise { get; set; }
 
-	public string ToString()
+	public override string ToString()
 	{
-
-	}
+		return ($"- {ItemName}: {ItemDesc} - {ItemPrice}");
+    }
 
     public FoodItem(string itemName,string itemDesc,double itemPrice,string customise)
 	{
