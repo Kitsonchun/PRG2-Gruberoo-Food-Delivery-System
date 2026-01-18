@@ -2,18 +2,21 @@
 
 public class FoodItem
 {
-	string ItemName { get; set; }
-	string ItemDesc { get; set; }
-	double ItemPrice { get; set; }
-	string Customise { get; set; }
+	public string ItemName { get; set; }
+	public string ItemDesc { get; set; }
+	public double ItemPrice { get; set; }
+	public string Customise { get; set; }
 
 	public string ToString()
 	{
 
 	}
 
-    public FoodItem()
+    public FoodItem(string itemName,string itemDesc,double itemPrice,string customise)
 	{
-
-	}
+		ItemName = itemName;
+		ItemDesc = itemDesc;
+		ItemPrice = itemPrice;
+		Customise = customise;
+    }
 }

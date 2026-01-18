@@ -5,14 +5,14 @@ using System.Xml.Serialization;
 public class Order
 {
 
-    int OrderId { get; set; }
-    DateTime OrderDateTime { get; set; }
-    double OrderTotal { get; set; }
-    string OrderStatus { get; set; }
-    DateTime DelveryDateTime { get; set; }
-    string DeliveryAddress { get; set; }
-    string OrderPaymentMethod { get; set; }
-    bool OrderPaid { get; set; }
+    public int OrderId { get; set; }
+    public DateTime OrderDateTime { get; set; }
+    public double OrderTotal { get; set; }
+    public string OrderStatus { get; set; }
+    public DateTime DelveryDateTime { get; set; }
+    public string DeliveryAddress { get; set; }
+    public string OrderPaymentMethod { get; set; }
+    public bool OrderPaid { get; set; }
 
     public double CalculateOrderTotal()
     {
