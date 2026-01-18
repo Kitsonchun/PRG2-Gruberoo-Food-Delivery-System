@@ -6,12 +6,8 @@ public class OrderedFoodItem : FoodItem
 	public double SubTotal { get; set; }
 
 	public double CalculateSubTotal()
-	{
-        double total;
-
-        total = QtyOrdered * ItemPrice;
-
-		return total;
+	{ 
+       return QtyOrdered * ItemPrice;
     }
 
     
@@ -19,7 +15,6 @@ public class OrderedFoodItem : FoodItem
 	public OrderedFoodItem(string itemName, string itemDesc, double itemPrice, string customise, int qtyOrdered) : base(itemName, itemDesc, itemPrice, customise)
 	{
 		QtyOrdered = qtyOrdered;
-		SubTotal = CalculateSubTotal();
 
     }
 }
