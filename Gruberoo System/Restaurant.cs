@@ -46,19 +46,20 @@ public class Restaurant
         menus.Add(menu);
     }
 
-    public bool RemoveMenu(Menu menu)
+    public bool RemoveMenu(string menuId)
     {
-        if (menus.Contains(menu))
+        for (int i = 0; i < menus.Count; i++)
         {
-            menus.Remove(menu);
-            return true;
+            if (menus[i].MenuID == menuId)
+            {
+                menus.RemoveAt(i);
+                return true;
+            }
         }
-        else
-        {
-            Console.WriteLine("Menu not found");
-            return false;
-        }
+        Console.WriteLine("Menu not found");
+        return false;
     }
+
 
     public override string ToString()
     {

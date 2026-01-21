@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-public class Menu 
-	{
-	
+public class Menu
+{
+
 	public string MenuID { get; set; }
 	public string MenuName { get; set; }
 	private List<FoodItem> fooditems = new List<FoodItem>();
@@ -17,33 +17,32 @@ public class Menu
 	{
 		fooditems.Add(items);
 	}
-	
-	public bool RemoveFoodItem(FoodItem items)
+
+	public bool RemoveFoodItem(FoodItem item)
 	{
-		if (fooditems.Contains(items))
+		for (int i = 0; i < fooditems.Count; i++)
 		{
-			fooditems.Remove(items);
-			return true;
+			if (fooditems[i].ItemName == item.ItemName)
+			{
+				fooditems.RemoveAt(i);
+				return true;
+			}
 		}
-		else 
-		{
-			Console.WriteLine("Food Item not found");
-            return false;
-        }
-			
 
-
-    }
+		Console.WriteLine("Food Item not found");
+		return false;
+	} 
 
 	public void DisplayMenuItems()
 	{
 		foreach (var i in fooditems)
 		{
-			Console.WriteLine(i);
+			Console.WriteLine(i); 
 		}
-	}
 
-	public override string ToString()
+}
+
+public override string ToString()
 	{
 		return ($"-{MenuName}");
 	}

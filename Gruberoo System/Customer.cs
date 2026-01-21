@@ -47,5 +47,10 @@ namespace Gruberoo_System
             }
         }
 
+        public override string ToString()
+        {
+            return $"";
+        }
     }
+}
 }
