@@ -6,19 +6,19 @@ public class Menu
 	
 	public string MenuID { get; set; }
 	public string MenuName { get; set; }
-	private List<Fooditem> fooditems = new List<Fooditem>();
+	private List<FoodItem> fooditems = new List<FoodItem>();
 	public Menu(string menuid, string menuname)
 	{
 		MenuName = menuname;
 		MenuID = menuid;
 	}
 
-	public void AddFoodItem(Fooditems items)
+	public void AddFoodItem(FoodItem items)
 	{
 		fooditems.Add(items);
 	}
 	
-	public bool RemoveFoodItem(Fooditems items)
+	public bool RemoveFoodItem(FoodItem items)
 	{
 		if (fooditems.Contains(items))
 		{
@@ -39,7 +39,7 @@ public class Menu
 	{
 		foreach (var i in fooditems)
 		{
-			Console.Writeline(i);
+			Console.WriteLine(i);
 		}
 	}
 

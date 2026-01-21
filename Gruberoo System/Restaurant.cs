@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 public class Restaurant 
 {
@@ -7,6 +8,7 @@ public class Restaurant
     public string RestaurantEmail { get; set; }
     private List<Order> order = new List<Order>();
     private List<SpecialOffer> Specials = new List<SpecialOffer>();
+    private List<Menu> menus = new List<Menu>();
 
 
     public Menu(string restaurantid, string restaurantname, string restaurantemail)
@@ -32,12 +34,17 @@ public class Restaurant
     }
     public void DisplayMenu()
     {   
-        foreach ()
-    }
-    public void AddMenu(Menu)
-    {
+        foreach (var m in menus)
+        {
+            Console.WriteLine(m);
+        }
 
     }
+    public void AddMenu(Menu menu)
+    {
+        menus.Add(menus)
+    }
+
     public bool RemoveMenu(menu)
     {
 
