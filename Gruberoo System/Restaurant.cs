@@ -11,11 +11,11 @@ public class Restaurant
     private List<Menu> menus = new List<Menu>();
 
 
-    public Menu(string restaurantid, string restaurantname, string restaurantemail)
+    public Restaurant(string restaurantid, string restaurantname, string restaurantemail)
     {
         RestaurantID = restaurantid;
         RestaurantName = restaurantname;
-        RestaurantEmail = restaurantemail
+        RestaurantEmail = restaurantemail;
     }
 
     public void DisplayOrders()
@@ -42,12 +42,21 @@ public class Restaurant
     }
     public void AddMenu(Menu menu)
     {
-        menus.Add(menus)
+        menus.Add(menu);
     }
 
-    public bool RemoveMenu(menu)
+    public bool RemoveMenu(Menu menu)
     {
-
+        if (menus.Contains(menu))
+        {
+            menus.Remove(menu);
+            return true;
+        }
+        else
+        {
+            Console.WriteLine("Food Item not found");
+            return false;
+        }
     }
 
     public override string ToString()
