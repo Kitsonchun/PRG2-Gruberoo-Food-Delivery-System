@@ -17,6 +17,8 @@ public class Order
 
     private List<OrderedFoodItem> orderedFoodItems;
 
+    public Restaurant Restaurant { get; set; }
+
     public double CalculateOrderTotal()
     {
         double Total = 0;
@@ -25,6 +27,7 @@ public class Order
             OrderTotal += item.CalculateSubTotal();
         }
 
+        OrderTotal = Total;
         return Total;
     }
 
@@ -40,7 +43,7 @@ public class Order
 
     public void DisplayOrderdFoodItems()
     {
-        foreach (Order order in orders)
+        foreach (OrderedFoodItem order in orderedFoodItems)
         {
             Console.WriteLine("Order ID   Customer    Restaurant     Delivery Date/Time   Amount   Status");
             Console.WriteLine("--------   --------    ----------     ------------------   ------   ---------");
