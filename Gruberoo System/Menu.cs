@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 public class Menu 
 	{
 	
@@ -18,14 +19,14 @@ public class Menu
 	
 	public bool RemoveFoodItem(Fooditems items)
 	{
-		if (fooditems.contains(items))
+		if (fooditems.Contains(items))
 		{
 			fooditems.Remove(items);
 			return true;
 		}
 		else 
 		{
-			Console.writeline("Food Item not found");
+			Console.WriteLine("Food Item not found");
             return false;
         }
 			
