@@ -1,6 +1,5 @@
-﻿using System;
-
-	public class Menu 
+﻿using System.Collections.Generic;
+public class Menu 
 	{
 	
 	public string MenuID { get; set; }
@@ -19,14 +18,14 @@
 	
 	public bool RemoveFoodItem(Fooditems items)
 	{
-		if (fooditems = str.contains(items))
+		if (fooditems.contains(items))
 		{
 			fooditems.Remove(items);
 			return true;
 		}
 		else 
 		{
-			Console.writeline("Food Item not found")
+			Console.writeline("Food Item not found");
             return false;
         }
 			
@@ -36,9 +35,9 @@
 
 	public void DisplayMenuItems()
 	{
-		foreach (i in fooditems)
+		foreach (var i in fooditems)
 		{
-			console.Writeline(i);
+			Console.Writeline(i);
 		}
 	}
 
