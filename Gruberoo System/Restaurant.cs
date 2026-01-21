@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Gruberoo_System;
+using System;
 using System.Collections.Generic;
 
 public class Restaurant 
@@ -7,7 +8,7 @@ public class Restaurant
     public string RestaurantName { get; set; }
     public string RestaurantEmail { get; set; }
     private List<Order> order = new List<Order>();
-    private List<SpecialOffer> Specials = new List<SpecialOffer>();
+    private List<SpecialOffer> specials = new List<SpecialOffer>();
     private List<Menu> menus = new List<Menu>();
 
 
@@ -27,7 +28,7 @@ public class Restaurant
     }
     public void DisplaySpecialOffers()
     {
-        foreach (var s in Specials)
+        foreach (var s in specials)
         {
             Console.WriteLine(s);
         }
