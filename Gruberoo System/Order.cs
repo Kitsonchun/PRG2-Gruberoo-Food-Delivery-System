@@ -16,7 +16,9 @@ public class Order
     public string OrderPaymentMethod { get; set; }
     public bool OrderPaid { get; set; }
 
-    private List<OrderedFoodItem> orderedFoodItems;
+    private List<OrderedFoodItem> orderedFoodItems = new List<OrderedFoodItem>();
+
+    public List<OrderedFoodItem> OrderedFoodItems { get; set; }
 
     public Restaurant Restaurant { get; set; }
 
