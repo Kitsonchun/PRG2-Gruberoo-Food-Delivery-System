@@ -11,6 +11,7 @@ public class Restaurant
     private List<SpecialOffer> specials = new List<SpecialOffer>();
     private List<Menu> menus = new List<Menu>();
 
+    public Menu Menu { get; set; }
 
     public Restaurant(string restaurantid, string restaurantname, string restaurantemail)
     {
