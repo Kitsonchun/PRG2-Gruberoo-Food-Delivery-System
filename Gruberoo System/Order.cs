@@ -3,6 +3,7 @@ using System.ComponentModel.Design;
 using System.Runtime.CompilerServices;
 using System.Xml.Serialization;
 using System.Collections.Generic;
+using Gruberoo_System;
 
 public class Order
 {
@@ -10,7 +11,7 @@ public class Order
     public DateTime OrderDateTime { get; set; }
     public double OrderTotal { get; set; }
     public string OrderStatus { get; set; }
-    public DateTime DelveryDateTime { get; set; }
+    public DateTime DeliveryDateTime { get; set; }
     public string DeliveryAddress { get; set; }
     public string OrderPaymentMethod { get; set; }
     public bool OrderPaid { get; set; }
@@ -18,6 +19,8 @@ public class Order
     private List<OrderedFoodItem> orderedFoodItems;
 
     public Restaurant Restaurant { get; set; }
+
+    public Customer Customer { get; set; }
 
     public double CalculateOrderTotal()
     {
@@ -43,11 +46,13 @@ public class Order
 
     public void DisplayOrderdFoodItems()
     {
+        Console.WriteLine("Order ID   Customer    Restaurant     Delivery Date/Time   Amount   Status");
+        Console.WriteLine("--------   --------    ----------     ------------------   ------   ---------");
+        Console.WriteLine($"{OrderId}   {Customer.customerName}    {Restaurant.RestaurantName}     {DeliveryDateTime}   {OrderTotal}   {OrderStatus}");
+
         foreach (OrderedFoodItem order in orderedFoodItems)
         {
-            Console.WriteLine("Order ID   Customer    Restaurant     Delivery Date/Time   Amount   Status");
-            Console.WriteLine("--------   --------    ----------     ------------------   ------   ---------");
-            Console.WriteLine($"{order.OrderId}   {order.CustomerName}    {order.RestaurantName}     {order.DelveryDateTime}   {order.OrderTotal}   {order.OrderStatus}");
+            Console.WriteLine(order);
         }
     }
 
