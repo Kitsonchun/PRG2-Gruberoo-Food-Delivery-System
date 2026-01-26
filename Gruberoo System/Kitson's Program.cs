@@ -43,8 +43,10 @@ void LoadFooditemsfile()
         {
             if (restaurant.RestaurantID == parts[0])
             {
-                restaurant.AddMenu(new Menu("Menu1", "Main Menu"));
-                restaurant.Menu.AddFoodItem(foodItem);
+                Menu menu = new Menu("Menu1", "Main Menu");
+                restaurant.AddMenu(menu);
+                menu.AddFoodItem(foodItem);
+                break;
             }
         }
     }

@@ -18,8 +18,7 @@ public class Order
 
     private List<OrderedFoodItem> orderedFoodItems = new List<OrderedFoodItem>();
 
-    public OrderedFoodItem OrderedFoodItems { get; set; }
-
+    public List<OrderedFoodItem> OrderedFoodItems { get; }
     public Restaurant Restaurant { get; set; }
 
     public SpecialOffer SpecialOffer { get; set; }
