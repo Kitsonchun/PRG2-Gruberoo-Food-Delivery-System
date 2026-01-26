@@ -67,10 +67,19 @@ public class Order
 
 
 
-    public Order(int orderID)
+    public Order(int orderId, Customer customer, Restaurant restaurant, DateTime deliveryDateTime,
+                 string deliveryAddress, string paymentMethod, bool orderPaid, OrderedFoodItem item)
     {
-        OrderId = orderID;
+        OrderId = orderId;
+        Customer = customer;
+        Restaurant = restaurant;
+        DeliveryDateTime = deliveryDateTime;
+        DeliveryAddress = deliveryAddress;
+        OrderPaymentMethod = paymentMethod;
+        OrderPaid = orderPaid;
         OrderDateTime = DateTime.Now;
-        orderedFoodItems = new List<OrderedFoodItem>();
+        OrderedFoodItems = item;
+        OrderStatus = "Pending";
+        OrderTotal = 0;
     }
 }
