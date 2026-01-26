@@ -6,8 +6,12 @@ public class Menu
 
 	public string MenuID { get; set; }
 	public string MenuName { get; set; }
+
 	private List<FoodItem> fooditems = new List<FoodItem>();
-	public Menu(string menuid, string menuname)
+
+	public Restaurant Restaurant { get; set; }
+
+    public Menu(string menuid, string menuname)
 	{
 		MenuName = menuname;
 		MenuID = menuid;
@@ -47,4 +51,4 @@ public override string ToString()
 		return ($"-{MenuName}");
 	}
 }
-}
+

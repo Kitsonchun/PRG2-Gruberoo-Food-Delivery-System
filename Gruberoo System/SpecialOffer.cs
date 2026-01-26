@@ -11,6 +11,10 @@ namespace Gruberoo_System
         public string offerCode {  get; set; }
         public string offerDesc { get; set; }
         public double Discount { get; set; }
+        public Restaurant Restaurant { get; set; }
+
+        private List<Order> orders = new List<Order>();
+
         public SpecialOffer(string offercode, string offerdesc, double discount)
         {
             offerCode = offercode;

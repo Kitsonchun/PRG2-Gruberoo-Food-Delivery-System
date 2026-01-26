@@ -6,7 +6,9 @@ public class OrderedFoodItem : FoodItem
 	public int QtyOrdered { get; set; }
 	public double SubTotal { get; set; }
 
-	public double CalculateSubTotal()
+	public Order Order { get; set; }
+
+    public double CalculateSubTotal()
 	{ 
        return QtyOrdered * ItemPrice;
     }
