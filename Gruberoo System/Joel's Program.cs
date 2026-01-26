@@ -34,7 +34,7 @@ void LoadOrderFile()
 	foreach (string o in ord.Skip(1))
 	{
 		var parts = o.Split(',');
-        string orderId = parts[0].Trim();
+        int orderId = int.Parse(parts[0].Trim());
         string customerEmail = parts[1].Trim();
         string restaurantId = parts[2].Trim();
         string deliveryDate = parts[3].Trim();
