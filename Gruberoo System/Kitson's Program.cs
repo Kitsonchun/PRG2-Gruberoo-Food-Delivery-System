@@ -87,7 +87,7 @@ void ProcessOrder(Queue<Order> orderQueue, Stack<Order> refundStack)
             newQueue.Enqueue(order);
 
             Console.WriteLine($"Order {order.OrderId}");
-            Console.WriteLine($"Customer: {order.Customer.customerName}");
+            Console.WriteLine($"Customer: {order.Customer.CustomerName}");
             Console.WriteLine("Ordered Items:");
 
             foreach (OrderedFoodItem item in order.OrderedFoodItems)
@@ -97,7 +97,7 @@ void ProcessOrder(Queue<Order> orderQueue, Stack<Order> refundStack)
             }
 
             Console.WriteLine($"Delivery date/time: {order.DeliveryDateTime:DD/MM/yyyy hh:mm}");
-            Console.WriteLine($"Total Amount: ${order.CalculateOrderTotal}");
+            Console.WriteLine($"Total Amount: ${order.CalculateOrderTotal()}");
             Console.WriteLine($"Order Status: {order.OrderStatus}");
 
             Console.Write("[C]onfirm / [R]eject / [S]kip / [D]eliver: ");
@@ -107,8 +107,8 @@ void ProcessOrder(Queue<Order> orderQueue, Stack<Order> refundStack)
             {
                 if (order.OrderStatus == "Pending")
                 {
-                    string newstatus = order.OrderStatus = "Preparing";
-                    Console.WriteLine($"Order {order.OrderId} confirmed. Status: {newstatus}");
+                    order.OrderStatus = "Preparing";
+                    Console.WriteLine(order.ToString());
                 }
 
                 else
@@ -121,10 +121,10 @@ void ProcessOrder(Queue<Order> orderQueue, Stack<Order> refundStack)
             {
                 if (order.OrderStatus == "Pending")
                 {
-                    string newstatus = order.OrderStatus = "Rejected";
+                    order.OrderStatus = "Rejected";
                     refundStack.Push(order);
                     orderQueue.Dequeue();
-                    Console.WriteLine($"Order {order.OrderId} has been refunded. Status: {newstatus} ");
+                    Console.WriteLine(order.ToString());
                 }
 
                 else
@@ -138,7 +138,7 @@ void ProcessOrder(Queue<Order> orderQueue, Stack<Order> refundStack)
                 if (order.OrderStatus == "Cancelled")
                 {
                     orderQueue.Dequeue();
-                    Console.WriteLine($"Order {order.OrderId} has been skipped. Status: {order.OrderStatus}");
+                    Console.WriteLine(order.ToString());
                 }
 
                 else
@@ -153,8 +153,55 @@ void ProcessOrder(Queue<Order> orderQueue, Stack<Order> refundStack)
                 {
                     string newstatus = order.OrderStatus = "Delivered";
                     orderQueue.Dequeue();
-                    Console.WriteLine($"Order {order.OrderId} has been Delivered. Status: {newstatus} ");
+                    Console.WriteLine(order.ToString());
                 }
+            }
+        }
+    }
+}
+
+void DeletingExistingOrder(Queue<Order> orderQueue, Stack<Order> refundStack)
+{
+    Console.WriteLine("Delete Order");
+    Console.WriteLine("=============");
+    Console.Write("Enter Customer Email: ");
+    string Email = Convert.ToString(Console.ReadLine());
+
+    Console.WriteLine("Pending Orders:");
+    foreach (Order order in orderQueue)
+    {
+        if (order.Customer.EmailAddress == Email)
+        {
+            if (order.OrderStatus == "Pending")
+            {
+                Console.WriteLine(order.OrderId);
+                Console.Write("Enter Order ID: ");
+                Console.WriteLine("Ordered Items:");
+                int i = 1;
+                foreach (OrderedFoodItem item in order.OrderedFoodItems)
+                {
+                    Console.WriteLine($"{i}. {item.ItemName} - {item.QtyOrdered}");
+                    i++;
+                }
+
+                Console.WriteLine($"Delivery date/time: {order.DeliveryDateTime:DD/MM/yyyy hh:mm}");
+                Console.WriteLine($"Total Amount: ${order.CalculateOrderTotal}");
+                Console.WriteLine($"Order Status: {order.OrderStatus}");
+                Console.Write("Confirm deletaion? [Y/N]: ");
+                string choice = Convert.ToString(Console.ReadLine()).ToUpper();
+                if (choice == "Y")
+                {
+                    order.OrderStatus = "Cancelled";
+                    Console.WriteLine($"Order {order.OrderId} cancelled. Refund of {order.OrderPaid} processed.");
+                }
+                else
+                {
+                    Console.WriteLine("Order deletion cancelled.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("No Orders found.");
             }
         }
     }

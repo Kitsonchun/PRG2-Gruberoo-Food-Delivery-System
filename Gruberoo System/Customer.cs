@@ -8,15 +8,15 @@ namespace Gruberoo_System
 {
     public class Customer
     {
-        public string emailAddress { get; set; }
-        public string customerName { get; set; }
+        public string EmailAddress { get; set; }
+        public string CustomerName { get; set; }
 
         private List<Order> orders = new List<Order>();
 
         public Customer(string emailaddress, string customername)
         {
-            emailAddress = emailaddress;
-            customerName = customername;
+            EmailAddress = emailaddress;
+            CustomerName = customername;
         }
 
         public void AddOrder(Order order)

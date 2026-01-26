@@ -18,7 +18,7 @@ public class Order
 
     private List<OrderedFoodItem> orderedFoodItems = new List<OrderedFoodItem>();
 
-    public List<OrderedFoodItem> OrderedFoodItems { get; }
+    public List<OrderedFoodItem> OrderedFoodItems { get; set; }
     public Restaurant Restaurant { get; set; }
 
     public SpecialOffer SpecialOffer { get; set; }
@@ -47,11 +47,12 @@ public class Order
         return orderedFoodItems.Remove(Item);
     }
 
+    // Change this to display number 7 Ordered Items//
     public void DisplayOrderdFoodItems()
     {
         Console.WriteLine("Order ID   Customer    Restaurant     Delivery Date/Time   Amount   Status");
         Console.WriteLine("--------   --------    ----------     ------------------   ------   ---------");
-        Console.WriteLine($"{OrderId}   {Customer.customerName}    {Restaurant.RestaurantName}     {DeliveryDateTime}   {OrderTotal}   {OrderStatus}");
+        Console.WriteLine($"{OrderId}   {Customer.CustomerName}    {Restaurant.RestaurantName}     {DeliveryDateTime}   {OrderTotal}   {OrderStatus}");
 
         foreach (OrderedFoodItem order in orderedFoodItems)
         {
