@@ -77,7 +77,10 @@ public class Order
         OrderPaymentMethod = paymentMethod;
         OrderPaid = orderPaid;
         OrderDateTime = DateTime.Now;
-        OrderedFoodItems = item;
+
+        OrderedFoodItems = new List<OrderedFoodItem>();
+        orderedFoodItems.Add(item);
+
         OrderStatus = "Pending";
         OrderTotal = 0;
     }
