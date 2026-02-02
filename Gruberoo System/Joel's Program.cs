@@ -9,6 +9,7 @@ using Gruberoo_System;
 
 List<Customer> CUSTOMER = new List<Customer>();
 List<Order> ORDER = new List<Order>();
+List<Restaurant> RESTAURANTS = new List<Restaurant>();
 
 void LoadCustomerfile()
 {
@@ -29,27 +30,48 @@ void LoadCustomerfile()
 
 void LoadOrderFile()
 {
-	string[] ord = File.ReadAllLines("orders.csv");
+    string[] ord = File.ReadAllLines("orders.csv");
 
-	foreach (string o in ord.Skip(1))
-	{
-		var parts = o.Split(',');
+    foreach (string o in ord.Skip(1))
+    {
+        var parts = o.Split(',');
+
         int orderId = int.Parse(parts[0].Trim());
         string customerEmail = parts[1].Trim();
         string restaurantId = parts[2].Trim();
-        string deliveryDate = parts[3].Trim();
-        string deliveryTime = parts[4].Trim();
-        string deliveryAddress = parts[5].Trim();
-        string createdDateTime = parts[6].Trim();
-        decimal totalAmount = decimal.Parse(parts[7].Trim());
-        string status = parts[8].Trim();
-        string items = parts[9].Trim();
 
-        Order order = new Order(orderId, customerEmail, restaurantId, deliveryDate,
-                                       deliveryTime, deliveryAddress, createdDateTime,
-                                       totalAmount, status, items);
+        DateTime deliveryDateTime = DateTime.Parse(
+            parts[3].Trim() + " " + parts[4].Trim()
+        );
+
+        string deliveryAddress = parts[5].Trim();
+        double totalAmount = double.Parse(parts[7].Trim());
+        string status = parts[8].Trim();
+
+        // 🔍 find customer object
+        Customer customer = CUSTOMER
+            .FirstOrDefault(c => c.EmailAddress == customerEmail);
+
+        // 🔍 find restaurant object
+        Restaurant restaurant = RESTAURANTS
+            .FirstOrDefault(r => r.RestaurantID == restaurantId);
+
+        if (customer == null || restaurant == null)
+            continue;
+
+        Order order = new Order(
+            orderId,
+            customer,
+            restaurant,
+            deliveryDateTime,
+            deliveryAddress,
+            totalAmount,
+            status
+        );
 
         ORDER.Add(order);
+        customer.AddOrder(order);
+        restaurant.(order);
     }
 }
 
