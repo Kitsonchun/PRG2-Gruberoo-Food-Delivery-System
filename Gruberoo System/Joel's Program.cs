@@ -71,7 +71,7 @@ void LoadOrderFile()
 
         ORDER.Add(order);
         customer.AddOrder(order);
-        restaurant.(order);
+        restaurant.order.Add(order);
     }
 }
 

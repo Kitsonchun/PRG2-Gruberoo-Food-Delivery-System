@@ -7,7 +7,8 @@ public class Restaurant
     public string RestaurantID { get; set; }
     public string RestaurantName { get; set; }
     public string RestaurantEmail { get; set; }
-    private List<Order> order = new List<Order>();
+
+    public List<Order> order = new List<Order>();
     private List<SpecialOffer> specials = new List<SpecialOffer>();
     private List<Menu> menus = new List<Menu>();
 
