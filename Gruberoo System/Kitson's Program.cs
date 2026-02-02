@@ -4,8 +4,7 @@ using System.Reflection.Metadata.Ecma335;
 // Doing features 1, 4, 6 & 8 //
 
 List<Restaurant> restaurants = new List<Restaurant>();
-List<FoodItem> foodItems = new List<FoodItem>();
-
+Dictionary<string,Menu> restaurantMenus = new Dictionary<string,Menu>();
 void LoadRestaurantsfile()
 { 
     string[] ResLines = File.ReadAllLines("restaurant.csv");
@@ -27,6 +26,7 @@ void LoadRestaurantsfile()
 void LoadFooditemsfile()
 {
     string[] FoodLines = File.ReadAllLines("fooditems.csv");
+    List<FoodItem> foodItems = new List<FoodItem>();
 
     foreach (string food in FoodLines.Skip(1))
     {
@@ -41,13 +41,16 @@ void LoadFooditemsfile()
 
         foreach (Restaurant restaurant in restaurants)
         {
-            if (restaurant.RestaurantID == parts[0])
+            if (!restaurantMenus.ContainsKey(restaurantId))
             {
                 Menu menu = new Menu("Menu1", "Main Menu");
                 restaurant.AddMenu(menu);
-                menu.AddFoodItem(foodItem);
-                break;
+                restaurantMenus[restaurantId] = menu;
             }
+
+            restaurantMenus[restaurantId].AddFoodItem(foodItem);
+            break;
+
         }
     }
 }
@@ -206,3 +209,6 @@ void DeletingExistingOrder(Queue<Order> orderQueue, Stack<Order> refundStack)
         }
     }
 }
+
+LoadRestaurantsfile();
+LoadFooditemsfile();
