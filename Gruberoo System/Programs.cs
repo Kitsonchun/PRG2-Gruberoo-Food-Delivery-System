@@ -7,9 +7,16 @@ using System.Text;
 using System.Threading.Tasks;
 
 // Doing features 1, 4, 6 & 8 //
+//==========================================================
+// Student Number : S10275142J
+// Student Name   : Kitson Chun Yi Fan
+// Partner Name   : Joel Ong Jia Jun 
+//==========================================================
 
 List<Restaurant> restaurants = new List<Restaurant>();
 Dictionary<string, Menu> restaurantMenus = new Dictionary<string, Menu>();
+
+// Feature 1 //
 void LoadRestaurantsfile()
 {
     string[] ResLines = File.ReadAllLines("restaurant.csv");
@@ -60,6 +67,8 @@ void LoadFooditemsfile()
     }
 }
 
+
+// Feature 4 //
 void ListAllOrder(List<Order> orders)
 {
     Console.WriteLine("All Orders");
@@ -76,7 +85,7 @@ void ListAllOrder(List<Order> orders)
     }
 }
 
-
+// Feature 6 //
 void ProcessOrder(Queue<Order> orderQueue, Stack<Order> refundStack)
 {
     Console.WriteLine("Process Order");
@@ -168,6 +177,7 @@ void ProcessOrder(Queue<Order> orderQueue, Stack<Order> refundStack)
     }
 }
 
+// Feature 8 //
 void DeletingExistingOrder(Queue<Order> orderQueue, Stack<Order> refundStack)
 {
     Console.WriteLine("Delete Order");
@@ -216,12 +226,18 @@ void DeletingExistingOrder(Queue<Order> orderQueue, Stack<Order> refundStack)
 }
 
 
-// Feature 2 , 4 , 6 ,8 //
+// Doing feature 2 , 3 , 5 ,7 //
+//==========================================================
+// Student Number : S10275107B
+// Student Name   : Joel Ong Jia Jun
+// Partner Name   : Kitson Chun Yi Fan
+//==========================================================
 
 List<Customer> CUSTOMER = new List<Customer>();
 List<Order> ORDER = new List<Order>();
 List<Restaurant> RESTAURANTS = new List<Restaurant>();
 
+// Feature 2 //
 void LoadCustomerfile()
 {
     string[] Cus = File.ReadAllLines("customers.csv");
@@ -239,6 +255,7 @@ void LoadCustomerfile()
     }
 }
 
+// Feature 3 //
 void LoadOrderFile()
 {
     string[] ord = File.ReadAllLines("orders.csv");

@@ -4,6 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
+//==========================================================
+// Student Number : S10275107B
+// Student Name   : Joel Ong Jia Jun
+// Partner Name   : Kitson Chun Yi Fan
+//==========================================================
+
 namespace Gruberoo_System
 {
     public class SpecialOffer

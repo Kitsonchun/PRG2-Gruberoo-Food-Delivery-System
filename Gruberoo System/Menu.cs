@@ -1,6 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 
+
+//==========================================================
+// Student Number : S10275107B
+// Student Name   : Joel Ong Jia Jun
+// Partner Name   : Kitson Chun Yi Fan
+//==========================================================
 public class Menu
 {
 

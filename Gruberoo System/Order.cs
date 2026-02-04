@@ -5,6 +5,11 @@ using System.Xml.Serialization;
 using System.Collections.Generic;
 using Gruberoo_System;
 
+//==========================================================
+// Student Number : S10275142J
+// Student Name   : Kitson Chun Yi Fan
+// Partner Name   : Joel Ong Jia Jun 
+//==========================================================
 public class Order
 {
     public int OrderId { get; set; }
