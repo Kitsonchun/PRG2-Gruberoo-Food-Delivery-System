@@ -315,21 +315,50 @@ void LoadSystem()
 
 void DisplaySystem()
 {
-    Console.WriteLine("===== Gruberoo Food Delivery System =====");
-    Console.WriteLine("1. Lista all restaurants and menu items");
-    Console.WriteLine("2. List all orders");
-    Console.WriteLine("3. Create a new order");
-    Console.WriteLine("4. Process an order");
-    Console.WriteLine("5. Modify an existing order");
-    Console.WriteLine("6. Delete an existing order");
-    Console.WriteLine("0. Exit");
-    Console.Write("Enter your choice: ");
-    string choice = Convert.ToString(Console.ReadLine());
-
-    if (choice == "1")
+    while (true)
     {
+        Console.WriteLine("===== Gruberoo Food Delivery System =====");
+        Console.WriteLine("1. List all restaurants and menu items");
+        Console.WriteLine("2. List all orders");
+        Console.WriteLine("3. Create a new order");
+        Console.WriteLine("4. Process an order");
+        Console.WriteLine("5. Modify an existing order");
+        Console.WriteLine("6. Delete an existing order");
+        Console.WriteLine("0. Exit");
+        Console.Write("Enter your choice: ");
+        string choice = Convert.ToString(Console.ReadLine());
 
+        if (choice == "1")
+        {
+
+        }
+        else if (choice == "2")
+        {
+            ListAllOrder(ORDER);
+        }
+        else if (choice == "3")
+        {
+
+        }
+        else if (choice == "4")
+        {
+            ProcessOrder(ORDER);
+        }
+        else if (choice == "5")
+        {
+
+        }
+        else if (choice == "6")
+        {
+            DeletingExistingOrder(ORDER);
+        }
+        else if (choice == "0")
+        {
+            break;
+        }
     }
 }
 
-// testing 2//
+LoadSystem();
+DisplaySystem();
+
