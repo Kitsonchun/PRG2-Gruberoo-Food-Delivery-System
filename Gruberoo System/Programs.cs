@@ -250,6 +250,8 @@ void LoadCustomerfile()
 
     }
 }
+
+// Feature 3 //
 void LoadOrderFile()
 {
     string[] ord = File.ReadAllLines("orders.csv");
@@ -296,9 +298,6 @@ void LoadOrderFile()
         restaurant.order.Add(order);
     }
 }
-
-// Feature 3 //
-
 
 
 void LoadSystem()
@@ -359,4 +358,7 @@ void DisplaySystem()
         }
     }
 }
+
+LoadSystem();
+DisplaySystem();
 
