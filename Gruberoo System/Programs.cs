@@ -250,8 +250,6 @@ void LoadCustomerfile()
 
     }
 }
-
-// Feature 3 //
 void LoadOrderFile()
 {
     string[] ord = File.ReadAllLines("orders.csv");
@@ -299,6 +297,9 @@ void LoadOrderFile()
     }
 }
 
+// Feature 3 //
+
+
 
 void LoadSystem()
 {
@@ -331,5 +332,3 @@ void DisplaySystem()
 
     }
 }
-
-// testing 2//
