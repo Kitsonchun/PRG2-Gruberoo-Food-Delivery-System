@@ -1,0 +1,37 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+
+//==========================================================
+// Student Number : S10275107B
+// Student Name   : Joel Ong Jia Jun
+// Partner Name   : Kitson Chun Yi Fan
+//==========================================================
+
+namespace Gruberoo_System
+{
+    public class SpecialOffer
+    {
+        public string offerCode {  get; set; }
+        public string offerDesc { get; set; }
+        public double Discount { get; set; }
+        public Restaurant Restaurant { get; set; }
+
+        private List<Order> orders = new List<Order>();
+
+        public SpecialOffer(string offercode, string offerdesc, double discount)
+        {
+            offerCode = offercode;
+            offerDesc = offerdesc;
+            Discount = discount;
+        }
+
+        public override string ToString()
+        {
+            return $"{offerCode}: {offerDesc} - {Discount}% off";
+        }
+    }
+}
