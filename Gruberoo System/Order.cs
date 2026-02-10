@@ -21,8 +21,6 @@ public class Order
     public string OrderPaymentMethod { get; set; }
     public bool OrderPaid { get; set; }
 
-    private List<OrderedFoodItem> orderedFoodItems = new List<OrderedFoodItem>();
-
     public List<OrderedFoodItem> OrderedFoodItems { get; set; }
     public Restaurant Restaurant { get; set; }
 
@@ -33,9 +31,10 @@ public class Order
     public double CalculateOrderTotal()
     {
         double Total = 0;
-        foreach (OrderedFoodItem item in orderedFoodItems)
+
+        foreach (OrderedFoodItem item in OrderedFoodItems)
         {
-            OrderTotal += item.CalculateSubTotal();
+            Total += item.CalculateSubTotal();
         }
 
         OrderTotal = Total;
@@ -44,18 +43,24 @@ public class Order
 
     public void AddOrderFoodItem(OrderedFoodItem Item)
     {
-        orderedFoodItems.Add(Item);
+        OrderedFoodItems.Add(Item);
     }
 
     public bool RemoveOrderFoodItem(OrderedFoodItem Item)
     {
-        return orderedFoodItems.Remove(Item);
+        return OrderedFoodItems.Remove(Item);
     }
 
     // Change this to display number 7 Ordered Items//
     public void DisplayOrderdFoodItems()
     {
-        Console.WriteLine($"{OrderId,-11}{Customer.CustomerName,-14}{Restaurant.RestaurantName,-18}{DeliveryDateTime,-21:dd/MM/yyyy HH:mm}${OrderTotal,-8:F2}{OrderStatus}");
+        int i = 1;
+
+        foreach (OrderedFoodItem item in OrderedFoodItems)
+        {
+            Console.WriteLine($"{i}. {item.ItemName} - {item.QtyOrdered}");
+            i++;
+        }
     }
 
     public override string ToString()
