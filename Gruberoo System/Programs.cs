@@ -53,7 +53,7 @@ void LoadFooditemsfile()
         string itemName = parts[1];
         string itemDesc = parts[2];
         double itemPrice = Convert.ToDouble(parts[3]);
-        string customise = parts[4];
+        string customise = " ";
 
         FoodItem foodItem = new FoodItem(itemName, itemDesc, itemPrice, customise);
 
@@ -91,6 +91,8 @@ void ListAllOrder(List<Order> orders)
 {
     Console.WriteLine("All Orders");
     Console.WriteLine("==========");
+    Console.WriteLine("Order ID   Customer      Restaurant        Delivery Date/Time   Amount   Status");
+    Console.WriteLine("--------   --------      ----------        ------------------   ------   ---------");
 
     if (orders.Count == 0)
     {
@@ -387,9 +389,11 @@ void ListAllRestaurantsAndMenuItems()
         {
             foreach (var item in menu.FoodItems)
             {
-                Console.WriteLine($"- {item.ItemName}: {item.ItemDesc} - ${item.ItemPrice}");
+                Console.WriteLine($"- {item.ItemName}: {item.ItemDesc} - ${item.ItemPrice:F2}");
             }
         }
+
+        Console.WriteLine();
     }
 }
 
@@ -401,7 +405,9 @@ void CreateNewOrder()
 
     Console.Write("Enter Customer Email: ");
     string email = Console.ReadLine().Trim();
+
     Customer customer = null;
+
     for (int i = 0; i < CUSTOMER.Count; i++)
     {
         if (CUSTOMER[i].EmailAddress == email)
@@ -419,7 +425,9 @@ void CreateNewOrder()
 
     Console.Write("Enter Restaurant ID: ");
     string restaurantId = Console.ReadLine().Trim();
+
     Restaurant restaurant = null;
+
     for (int i = 0; i < restaurants.Count; i++)
     {
         if (restaurants[i].RestaurantID == restaurantId)
@@ -428,6 +436,7 @@ void CreateNewOrder()
             break;
         }
     }
+
     if (restaurant == null)
     {
         Console.WriteLine("Restaurant not found");
@@ -437,8 +446,10 @@ void CreateNewOrder()
 
     Console.Write("Enter Delivery Date (dd/MM/yyyy): ");
     string deliveryDate = Console.ReadLine();
+
     Console.Write("Enter Delivery Time (HH:mm): ");
     string deliveryTime = Console.ReadLine();
+
     DateTime deliveryDateTime = DateTime.Parse(deliveryDate + " " + deliveryTime);
 
     Console.Write("Enter Delivery Address: ");
@@ -478,6 +489,7 @@ void CreateNewOrder()
             Console.WriteLine("Not Available.");
             continue;
         }
+
         if (itemNo == 0) break;
 
         Console.Write("Enter quantity: ");

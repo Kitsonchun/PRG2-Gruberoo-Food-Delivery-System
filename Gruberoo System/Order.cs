@@ -55,14 +55,7 @@ public class Order
     // Change this to display number 7 Ordered Items//
     public void DisplayOrderdFoodItems()
     {
-        Console.WriteLine("Order ID   Customer    Restaurant     Delivery Date/Time   Amount   Status");
-        Console.WriteLine("--------   --------    ----------     ------------------   ------   ---------");
-        Console.WriteLine($"{OrderId}   {Customer.CustomerName}    {Restaurant.RestaurantName}     {DeliveryDateTime}   {OrderTotal}   {OrderStatus}");
-
-        foreach (OrderedFoodItem order in orderedFoodItems)
-        {
-            Console.WriteLine(order);
-        }
+        Console.WriteLine($"{OrderId,-11}{Customer.CustomerName,-14}{Restaurant.RestaurantName,-18}{DeliveryDateTime,-21:dd/MM/yyyy HH:mm}${OrderTotal,-8:F2}{OrderStatus}");
     }
 
     public override string ToString()
