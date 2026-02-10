@@ -99,19 +99,22 @@ void ProcessOrder(Queue<Order> orderQueue, Stack<Order> refundStack)
     Console.Write("Enter Restaurant ID: ");
     string restaurantId = Convert.ToString(Console.ReadLine());
 
-    int i = 1;
+    int count = orderQueue.Count;
 
     Queue<Order> newQueue = new Queue<Order>();
 
-    foreach (Order order in orderQueue)
-    {
+    while (count > 0)
+    { 
+        Order order = orderQueue.Dequeue();
+        count--;
+
         if (order.Restaurant.RestaurantID == restaurantId)
         {
-            newQueue.Enqueue(order);
-
             Console.WriteLine($"Order {order.OrderId}");
             Console.WriteLine($"Customer: {order.Customer.CustomerName}");
             Console.WriteLine("Ordered Items:");
+
+            int i = 1;
 
             foreach (OrderedFoodItem item in order.OrderedFoodItems)
             {
@@ -138,6 +141,8 @@ void ProcessOrder(Queue<Order> orderQueue, Stack<Order> refundStack)
                 {
                     Console.WriteLine("Order cannot be confirmed.");
                 }
+
+                newQueue.Enqueue(order);
             }
 
             else if (choice == "R")
@@ -146,13 +151,13 @@ void ProcessOrder(Queue<Order> orderQueue, Stack<Order> refundStack)
                 {
                     order.OrderStatus = "Rejected";
                     refundStack.Push(order);
-                    orderQueue.Dequeue();
                     Console.WriteLine(order.ToString());
                 }
 
                 else
                 {
                     Console.WriteLine("Order cannot be rejected.");
+                    newQueue.Enqueue(order);
                 }
             }
 
@@ -160,8 +165,8 @@ void ProcessOrder(Queue<Order> orderQueue, Stack<Order> refundStack)
             {
                 if (order.OrderStatus == "Cancelled")
                 {
-                    orderQueue.Dequeue();
                     Console.WriteLine(order.ToString());
+                    newQueue.Enqueue(order);
                 }
 
                 else
@@ -175,11 +180,26 @@ void ProcessOrder(Queue<Order> orderQueue, Stack<Order> refundStack)
                 if (order.OrderStatus == "Pending")
                 {
                     string newstatus = order.OrderStatus = "Delivered";
-                    orderQueue.Dequeue();
                     Console.WriteLine(order.ToString());
                 }
+
+                else
+                {
+                    Console.WriteLine("Order cannot be delivered.");
+                    newQueue.Enqueue(order);
+                }
+            }
+
+            else
+            {
+                newQueue.Enqueue(order);
             }
         }
+    }
+
+    while (newQueue.Count > 0)
+    {
+        orderQueue.Enqueue(newQueue.Dequeue());
     }
 }
 
@@ -192,6 +212,7 @@ void DeletingExistingOrder(Queue<Order> orderQueue, Stack<Order> refundStack)
     string Email = Convert.ToString(Console.ReadLine());
 
     Console.WriteLine("Pending Orders:");
+
     foreach (Order order in orderQueue)
     {
         if (order.Customer.EmailAddress == Email)
@@ -199,30 +220,39 @@ void DeletingExistingOrder(Queue<Order> orderQueue, Stack<Order> refundStack)
             if (order.OrderStatus == "Pending")
             {
                 Console.WriteLine(order.OrderId);
-                Console.Write("Enter Order ID: ");
-                Console.WriteLine("Ordered Items:");
-                int i = 1;
-                foreach (OrderedFoodItem item in order.OrderedFoodItems)
-                {
-                    Console.WriteLine($"{i}. {item.ItemName} - {item.QtyOrdered}");
-                    i++;
-                }
 
-                Console.WriteLine($"Delivery date/time: {order.DeliveryDateTime:DD/MM/yyyy hh:mm}");
-                Console.WriteLine($"Total Amount: ${order.CalculateOrderTotal}");
-                Console.WriteLine($"Order Status: {order.OrderStatus}");
-                Console.Write("Confirm deletaion? [Y/N]: ");
-                string choice = Convert.ToString(Console.ReadLine()).ToUpper();
-                if (choice == "Y")
+                Console.Write("Enter Order ID: ");
+                int selectedorderid =  Convert.ToInt32(Console.ReadLine());
+
+                if (order.OrderId == selectedorderid)
                 {
-                    order.OrderStatus = "Cancelled";
-                    Console.WriteLine($"Order {order.OrderId} cancelled. Refund of {order.OrderPaid} processed.");
+                    Console.WriteLine("Ordered Items:");
+
+                    int i = 1;
+
+                    foreach (OrderedFoodItem item in order.OrderedFoodItems)
+                    {
+                        Console.WriteLine($"{i}. {item.ItemName} - {item.QtyOrdered}");
+                        i++;
+                    }
+
+                    Console.WriteLine($"Delivery date/time: {order.DeliveryDateTime:dd/MM/yyyy hh:mm}");
+                    Console.WriteLine($"Total Amount: ${order.CalculateOrderTotal()}");
+                    Console.WriteLine($"Order Status: {order.OrderStatus}");
+                    Console.Write("Confirm deletaion? [Y/N]: ");
+                    string choice = Convert.ToString(Console.ReadLine()).ToUpper();
+
+                    if (choice == "Y")
+                    {
+                        order.OrderStatus = "Cancelled";
+                        refundStack.Push(order);
+                        Console.WriteLine($"Order {order.OrderId} cancelled. Refund of {order.OrderPaid} processed.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Order deletion cancelled.");
+                    }
                 }
-                else
-                {
-                    Console.WriteLine("Order deletion cancelled.");
-                }
-            }
             else
             {
                 Console.WriteLine("No Orders found.");
