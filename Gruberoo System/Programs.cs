@@ -403,7 +403,7 @@ void LoadOrderFile()
 
     foreach (string o in ord.Skip(1))
     {
-        // Better CSV parsing to handle quoted fields
+       
         List<string> parts = new List<string>();
         bool inQuotes = false;
         string currentField = "";
@@ -426,7 +426,7 @@ void LoadOrderFile()
                 currentField += c;
             }
         }
-        parts.Add(currentField); // Add last field
+        parts.Add(currentField);
 
         int orderId = int.Parse(parts[0].Trim());
         string customerEmail = parts[1].Trim();
@@ -473,7 +473,7 @@ void LoadOrderFile()
         );
 
 
-        string itemsData = parts[9].Trim();
+        string itemsData = parts.Count > 9 ? parts[9].Trim() : "";
 
         if (!string.IsNullOrEmpty(itemsData))
         {
@@ -597,9 +597,10 @@ void CreateNewOrder()
 
     if (restaurant == null)
     {
-        Console.WriteLine("Restaurant not found");
-        return;
+        Console.WriteLine("Restaurant not found"); return;
     }
+
+    DateTime createdDateTime = DateTime.Now;
 
 
     Console.Write("Enter Delivery Date (dd/MM/yyyy): ");
@@ -745,14 +746,16 @@ void CreateNewOrder()
     }
 
     Console.WriteLine($"Payment method selected: {Paymentmethod}");
-
+    string itemsInOrder = string.Join(" | ", newOrder.OrderedFoodItems.Select(item => $"{item.ItemName}, {item.QtyOrdered}"));
     newOrder.OrderPaymentMethod = Paymentmethod;
     customer.AddOrder(newOrder);
     ORDER.Add(newOrder);
     restaurant.order.Add(newOrder);
     orderQueue.Enqueue(newOrder);
-    string orderLine = $"{newOrder.OrderId},{customer.EmailAddress},{restaurant.RestaurantID},{deliveryDateTime:dd/MM/yyyy},{deliveryDateTime:HH:mm},{deliveryAddress},,{orderTotal:F2},{newOrder.OrderStatus}";
-    File.AppendAllText("orders.csv", orderLine + Environment.NewLine);
+
+    string filePath = @"C:\Users\ongjj\OneDrive\Documents\GitHub\PRG2-Gruberoo-Food-Delivery-System\Gruberoo System\orders.csv";
+    string orderLine = $"{newOrder.OrderId},{customer.EmailAddress},{restaurant.RestaurantID},{deliveryDateTime:dd/MM/yyyy},{deliveryDateTime:HH:mm},{deliveryAddress},{createdDateTime:dd/MM/yyyy HH:mm},{orderTotal:F2},{newOrder.OrderStatus},{itemsInOrder}";
+    File.AppendAllText(filePath, orderLine + Environment.NewLine);
 
     Console.WriteLine($"Order {newOrder.OrderId} created successfully! Status: {newOrder.OrderStatus}");
 }
@@ -1043,6 +1046,8 @@ void DisplaySystem()
         Console.WriteLine("4. Process an order");
         Console.WriteLine("5. Modify an existing order");
         Console.WriteLine("6. Delete an existing order");
+        Console.WriteLine("7. Unprocessed orders for a current day");
+        Console.WriteLine("8. DIsplay Total Gruberoo Earnings");
         Console.WriteLine("0. Exit");
         Console.Write("Enter your choice: ");
         string choice = Convert.ToString(Console.ReadLine());
@@ -1070,6 +1075,14 @@ void DisplaySystem()
         else if (choice == "6")
         {
             DeletingExistingOrder(orderQueue,refundStack);
+        }
+        else if (choice == "7")
+        {
+            //PUT HERE MY BOY//
+        }
+        else if (choice == "8")
+        {
+            TotelGruberooEarnings();
         }
         else if (choice == "0")
         {
