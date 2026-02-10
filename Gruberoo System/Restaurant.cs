@@ -15,7 +15,7 @@ public class Restaurant
 
     public List<Order> order = new List<Order>();
     private List<SpecialOffer> specials = new List<SpecialOffer>();
-    private List<Menu> menus = new List<Menu>();
+    public List<Menu> Menus = new List<Menu>();
 
 
     public Restaurant(string restaurantid, string restaurantname, string restaurantemail)
@@ -41,7 +41,7 @@ public class Restaurant
     }
     public void DisplayMenu()
     {   
-        foreach (var m in menus)
+        foreach (var m in Menus)
         {
             Console.WriteLine(m);
         }
@@ -49,16 +49,16 @@ public class Restaurant
     }
     public void AddMenu(Menu menu)
     {
-        menus.Add(menu);
+        Menus.Add(menu);
     }
 
     public bool RemoveMenu(string menuId)
     {
-        for (int i = 0; i < menus.Count; i++)
+        for (int i = 0; i < Menus.Count; i++)
         {
-            if (menus[i].MenuID == menuId)
+            if (Menus[i].MenuID == menuId)
             {
-                menus.RemoveAt(i);
+                Menus.RemoveAt(i);
                 return true;
             }
         }

@@ -13,7 +13,7 @@ public class Menu
 	public string MenuID { get; set; }
 	public string MenuName { get; set; }
 
-	private List<FoodItem> fooditems = new List<FoodItem>();
+	public List<FoodItem> fooditems = new List<FoodItem>();
 
 	public Restaurant Restaurant { get; set; }
 

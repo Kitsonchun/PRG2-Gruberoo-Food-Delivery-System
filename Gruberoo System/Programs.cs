@@ -313,7 +313,7 @@ void ListAllRestaurantsAndMenuItems()
 
             foreach (var menu in restaurant.Menus)
             {
-                foreach (var item in menu.FoodItems)
+                foreach (var item in menu.fooditems)
                 {
                     Console.WriteLine($"- {item.ItemName}: {item.ItemDesc} - ${item.ItemPrice}");
                 }
@@ -334,7 +334,7 @@ void CreateNewOrder()
     Customer customer = CUSTOMER.FirstOrDefault(c => c.EmailAddress == email);
     if (customer == null)
     {
-        Console.WriteLine("Customer not found!");
+        Console.WriteLine("Customer not found");
         return;
     }
 
@@ -343,20 +343,22 @@ void CreateNewOrder()
     Restaurant restaurant = RESTAURANTS.FirstOrDefault(r => r.RestaurantID == restaurantId);
     if (restaurant == null)
     {
-        Console.WriteLine("Restaurant not found!");
+        Console.WriteLine("Restaurant not found");
         return;
     }
 
     Console.Write("Enter Delivery Date (dd/MM/yyyy): ");
-    string dateInput = Console.ReadLine().Trim();
+    string deliveryDate = Console.ReadLine();
 
     Console.Write("Enter Delivery Time (HH:mm): ");
-    string timeInput = Console.ReadLine().Trim();
+    string deliveryTime = Console.ReadLine();
+
+    DateTime deliveryDateTime = DateTime.Parse(deliveryDate + " " + deliveryTime);
 
     Console.Write("Enter Delivery Address: ");
     string deliveryAddress = Console.ReadLine().Trim();
 
-    List<FoodItem> allItems = restaurant.Menus.SelectMany(m => m.FoodItems).ToList();
+    List<FoodItem> allItems = restaurant.Menus.SelectMany(m => m.fooditems).ToList();
     Console.WriteLine("Available Food Items:");
     for (int i = 0; i < allItems.Count; i++)
         Console.WriteLine($"{i + 1}. {allItems[i].ItemName} - ${allItems[i].ItemPrice:F2}");
@@ -426,9 +428,6 @@ void CreateNewOrder()
         "Pending"
     );
     newOrder.OrderedFoodItems.AddRange(orderedItems);
-    newOrder.SpecialRequest = specialRequest;
-    newOrder.PaymentMethod = paymentMethod;
-
     ORDER.Add(newOrder);
     customer.AddOrder(newOrder);
     restaurant.order.Add(newOrder);
@@ -437,7 +436,6 @@ void CreateNewOrder()
     File.AppendAllText("orders.csv", orderLine + Environment.NewLine);
 
     Console.WriteLine($"Order {newOrder.OrderId} created successfully! Status: {newOrder.OrderStatus}");
-}
 }
 
 
@@ -485,15 +483,15 @@ void DisplaySystem()
         }
         else if (choice == "4")
         {
-            ProcessOrder(ORDER);
+            //ProcessOrder(ORDER);
         }
         else if (choice == "5")
         {
 
-        }
+        } 
         else if (choice == "6")
         {
-            DeletingExistingOrder(ORDER);
+            //DeletingExistingOrder(ORDER);
         }
         else if (choice == "0")
         {
