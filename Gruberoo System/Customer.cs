@@ -20,6 +20,11 @@ namespace Gruberoo_System
 
         private List<Order> orders = new List<Order>();
 
+        public List<Order> Orders
+        {
+            get { return new List<Order>(orders); }
+        }
+
         public Customer(string customername, string emailaddress)
         {
             CustomerName = customername;
@@ -60,5 +65,4 @@ namespace Gruberoo_System
             return $"";
         }
     }
-}
 }

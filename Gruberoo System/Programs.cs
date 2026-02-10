@@ -271,14 +271,25 @@ void LoadOrderFile()
         double totalAmount = double.Parse(parts[7].Trim());
         string status = parts[8].Trim();
 
-        // 🔍 find customer object
-        Customer customer = CUSTOMER
-            .FirstOrDefault(c => c.EmailAddress == customerEmail);
+        Customer customer = null;
+        foreach (Customer c in CUSTOMER)
+        {
+            if (c.EmailAddress == customerEmail)
+            {
+                customer = c;
+                break;
+            }
+        }
 
-        // 🔍 find restaurant object
-        Restaurant restaurant = RESTAURANTS
-            .FirstOrDefault(r => r.RestaurantID == restaurantId);
-
+        Restaurant restaurant = null;
+        foreach (Restaurant r in RESTAURANTS)
+        {
+            if (r.RestaurantID == restaurantId)
+            {
+                restaurant = r;
+                break;
+            }
+        }
         if (customer == null || restaurant == null)
             continue;
 
@@ -313,7 +324,7 @@ void ListAllRestaurantsAndMenuItems()
 
             foreach (var menu in restaurant.Menus)
             {
-                foreach (var item in menu.fooditems)
+                foreach (var item in menu.FoodItems)
                 {
                     Console.WriteLine($"- {item.ItemName}: {item.ItemDesc} - ${item.ItemPrice}");
                 }
@@ -323,7 +334,6 @@ void ListAllRestaurantsAndMenuItems()
 }
 
 // Feature 5 //
-
 void CreateNewOrder()
 {
     Console.WriteLine("Create New Order");
@@ -331,39 +341,75 @@ void CreateNewOrder()
 
     Console.Write("Enter Customer Email: ");
     string email = Console.ReadLine().Trim();
-    Customer customer = CUSTOMER.FirstOrDefault(c => c.EmailAddress == email);
+    Customer customer = null;
+    for (int i = 0; i < CUSTOMER.Count; i++)
+    {
+        if (CUSTOMER[i].EmailAddress == email)
+        {
+            customer = CUSTOMER[i];
+            break;
+        }
+    }
     if (customer == null)
     {
         Console.WriteLine("Customer not found");
         return;
     }
 
+
     Console.Write("Enter Restaurant ID: ");
     string restaurantId = Console.ReadLine().Trim();
-    Restaurant restaurant = RESTAURANTS.FirstOrDefault(r => r.RestaurantID == restaurantId);
+    Restaurant restaurant = null;
+    for (int i = 0; i < RESTAURANTS.Count; i++)
+    {
+        if (RESTAURANTS[i].RestaurantID == restaurantId)
+        {
+            restaurant = RESTAURANTS[i];
+            break;
+        }
+    }
     if (restaurant == null)
     {
         Console.WriteLine("Restaurant not found");
         return;
     }
 
+
     Console.Write("Enter Delivery Date (dd/MM/yyyy): ");
     string deliveryDate = Console.ReadLine();
-
     Console.Write("Enter Delivery Time (HH:mm): ");
     string deliveryTime = Console.ReadLine();
-
     DateTime deliveryDateTime = DateTime.Parse(deliveryDate + " " + deliveryTime);
 
     Console.Write("Enter Delivery Address: ");
     string deliveryAddress = Console.ReadLine().Trim();
 
-    List<FoodItem> allItems = restaurant.Menus.SelectMany(m => m.fooditems).ToList();
+
+    List<FoodItem> allItems = new List<FoodItem>();
+    for (int i = 0; i < restaurant.Menus.Count; i++)
+    {
+        Menu menu = restaurant.Menus[i];
+        for (int j = 0; j < menu.FoodItems.Count; j++)
+        {
+            allItems.Add(menu.FoodItems[j]);
+        }
+    }
+
     Console.WriteLine("Available Food Items:");
     for (int i = 0; i < allItems.Count; i++)
         Console.WriteLine($"{i + 1}. {allItems[i].ItemName} - ${allItems[i].ItemPrice:F2}");
 
-    List<OrderedFoodItem> orderedItems = new List<OrderedFoodItem>();
+
+    Order newOrder = new Order(
+        ORDER.Count > 0 ? ORDER.Max(o => o.OrderId) + 1 : 1001,
+        customer,
+        restaurant,
+        deliveryDateTime,
+        deliveryAddress,
+        0,
+        "Pending"
+    );
+
     while (true)
     {
         Console.Write("Enter item number (0 to finish): ");
@@ -376,12 +422,12 @@ void CreateNewOrder()
 
         Console.Write("Enter quantity: ");
         if (!int.TryParse(Console.ReadLine(), out int qty) || qty <= 0)
-        {
             continue;
-        }
 
         FoodItem selectedItem = allItems[itemNo - 1];
-        orderedItems.Add(new OrderedFoodItem(
+
+       
+        newOrder.AddOrderFoodItem(new OrderedFoodItem(
             selectedItem.ItemName,
             selectedItem.ItemDesc,
             selectedItem.ItemPrice,
@@ -390,7 +436,7 @@ void CreateNewOrder()
         ));
     }
 
-    if (orderedItems.Count == 0)
+    if (newOrder.OrderedFoodItems.Count == 0)
     {
         Console.WriteLine("No items selected. Order cancelled.");
         return;
@@ -401,10 +447,11 @@ void CreateNewOrder()
         ? Console.ReadLine().Trim()
         : "";
 
-    double itemsTotal = orderedItems.Sum(x => x.CalculateSubTotal());
-    double deliveryFee = 5.0;
-    double orderTotal = itemsTotal + deliveryFee;
-    Console.WriteLine($"Order Total: ${itemsTotal:F2} + ${deliveryFee:F2} = ${orderTotal:F2}");
+
+    double orderTotal = 5.0 + newOrder.CalculateOrderTotal();
+    newOrder.OrderTotal = orderTotal;
+
+    Console.WriteLine($"Order Total: ${orderTotal:F2} (including $5 delivery fee)");
 
     Console.Write("Proceed to payment? [Y/N]: ");
     if (Console.ReadLine().Trim().ToUpper() != "Y")
@@ -414,28 +461,220 @@ void CreateNewOrder()
     }
 
     Console.Write("Payment method [CC=Credit Card / PP=PayPal / CD=Cash]: ");
-    string paymentMethod = Console.ReadLine().Trim().ToUpper();
+    newOrder.OrderPaymentMethod = Console.ReadLine().Trim().ToUpper();
 
-    int newOrderId = ORDER.Count > 0 ? ORDER.Max(o => o.OrderId) + 1 : 1001;
-
-    Order newOrder = new Order(
-        newOrderId,
-        customer,
-        restaurant,
-        deliveryDateTime,
-        deliveryAddress,
-        orderTotal,
-        "Pending"
-    );
-    newOrder.OrderedFoodItems.AddRange(orderedItems);
-    ORDER.Add(newOrder);
     customer.AddOrder(newOrder);
+    ORDER.Add(newOrder);
     restaurant.order.Add(newOrder);
-
     string orderLine = $"{newOrder.OrderId},{customer.EmailAddress},{restaurant.RestaurantID},{deliveryDateTime:dd/MM/yyyy},{deliveryDateTime:HH:mm},{deliveryAddress},,{orderTotal:F2},{newOrder.OrderStatus}";
     File.AppendAllText("orders.csv", orderLine + Environment.NewLine);
 
     Console.WriteLine($"Order {newOrder.OrderId} created successfully! Status: {newOrder.OrderStatus}");
+}
+
+
+//Feature 7//
+void ModifyExistingOrder()
+{
+    Console.WriteLine("Modify Order");
+    Console.WriteLine("============");
+
+    Console.Write("Enter Customer Email: ");
+    string email = Console.ReadLine().Trim();
+
+    Customer customer = null;
+    for (int i = 0; i < CUSTOMER.Count; i++)
+    {
+        if (CUSTOMER[i].EmailAddress == email)
+        {
+            customer = CUSTOMER[i];
+            break;
+        }
+    }
+
+    if (customer == null)
+    {
+        Console.WriteLine("Customer not found.");
+        return;
+    }
+
+    List<Order> pendingOrders = new List<Order>();
+    for (int i = 0; i < customer.Orders.Count; i++)
+    {
+        if (customer.Orders[i].OrderStatus == "Pending")
+        {
+            pendingOrders.Add(customer.Orders[i]);
+            Console.WriteLine($"Order ID: {customer.Orders[i].OrderId}");
+        }
+    }
+
+    if (pendingOrders.Count == 0)
+    {
+        Console.WriteLine("No pending orders found.");
+        return;
+    }
+
+    Console.Write("Enter Order ID to modify: ");
+    if (!int.TryParse(Console.ReadLine().Trim(), out int orderId))
+    {
+        Console.WriteLine("Invalid Order ID.");
+        return;
+    }
+
+    Order orderToModify = null;
+    for (int i = 0; i < pendingOrders.Count; i++)
+    {
+        if (pendingOrders[i].OrderId == orderId)
+        {
+            orderToModify = pendingOrders[i];
+            break;
+        }
+    }
+
+    if (orderToModify == null)
+    {
+        Console.WriteLine("Order not found.");
+        return;
+    }
+
+    Console.WriteLine("Current Order Details:");
+    orderToModify.DisplayOrderdFoodItems();
+    Console.WriteLine($"Delivery Address: {orderToModify.DeliveryAddress}");
+    Console.WriteLine($"Delivery Date/Time: {orderToModify.DeliveryDateTime:dd/MM/yyyy HH:mm}");
+
+    Console.Write("Modify: [1] Items [2] Address [3] Delivery Time: ");
+    string modChoice = Console.ReadLine().Trim();
+
+    if (modChoice == "1")
+    {
+        List<FoodItem> availableItems = new List<FoodItem>();
+        for (int i = 0; i < orderToModify.Restaurant.Menus.Count; i++)
+        {
+            Menu menu = orderToModify.Restaurant.Menus[i];
+            for (int j = 0; j < menu.FoodItems.Count; j++)
+            {
+                availableItems.Add(menu.FoodItems[j]);
+            }
+        }
+
+        Console.WriteLine("Available Food Items:");
+        for (int i = 0; i < availableItems.Count; i++)
+        {
+            Console.WriteLine($"{i + 1}. {availableItems[i].ItemName} - ${availableItems[i].ItemPrice:F2}");
+        }
+
+        Console.WriteLine("Modify Order Items:");
+        Console.WriteLine("1. Add Item  2. Remove Item");
+        if (!int.TryParse(Console.ReadLine(), out int itemChoice))
+        {
+            Console.WriteLine("Invalid choice.");
+            return;
+        }
+
+        if (itemChoice == 1)
+        {
+            while (true)
+            {
+                Console.Write("Enter item number to add (0 to finish): ");
+                if (!int.TryParse(Console.ReadLine(), out int itemNo) || itemNo < 0 || itemNo > availableItems.Count)
+                {
+                    Console.WriteLine("Not Available.");
+                    continue;
+                }
+                if (itemNo == 0) break;
+
+                Console.Write("Enter quantity: ");
+                if (!int.TryParse(Console.ReadLine(), out int qty) || qty <= 0)
+                {
+                    Console.WriteLine("Invalid quantity.");
+                    continue;
+                }
+
+                FoodItem selectedItem = availableItems[itemNo - 1];
+
+                
+                orderToModify.AddOrderFoodItem(new OrderedFoodItem(
+                    selectedItem.ItemName,
+                    selectedItem.ItemDesc,
+                    selectedItem.ItemPrice,
+                    selectedItem.Customise,
+                    qty
+                ));
+
+                Console.WriteLine($"{qty} x {selectedItem.ItemName} added.");
+            }
+        }
+        else if (itemChoice == 2)
+        {
+            while (true)
+            {
+                List<OrderedFoodItem> items = orderToModify.OrderedFoodItems;
+                if (items.Count == 0)
+                {
+                    Console.WriteLine("No items left to remove.");
+                    break;
+                }
+
+                Console.WriteLine("Current Items:");
+                for (int i = 0; i < items.Count; i++)
+                {
+                    Console.WriteLine($"{i + 1}. {items[i].ItemName} - {items[i].QtyOrdered}");
+                }
+
+                Console.Write("Enter item number to remove (0 to finish): ");
+                if (!int.TryParse(Console.ReadLine(), out int removeNo) || removeNo < 0 || removeNo > items.Count)
+                {
+                    Console.WriteLine("Invalid input.");
+                    continue;
+                }
+                if (removeNo == 0) break;
+
+                
+                if (orderToModify.RemoveOrderFoodItem(items[removeNo - 1]))
+                    Console.WriteLine($"{items[removeNo - 1].ItemName} removed.");
+            }
+        }
+        else
+        {
+            Console.WriteLine("Invalid choice.");
+            return;
+        }
+
+        
+        double newTotal = orderToModify.CalculateOrderTotal();
+        Console.WriteLine($"Order updated. New total: ${newTotal:F2}");
+    }
+    else if (modChoice == "2")
+    {
+        Console.Write("Enter new delivery address: ");
+        orderToModify.DeliveryAddress = Console.ReadLine().Trim();
+        Console.WriteLine("Delivery address updated.");
+    }
+    else if (modChoice == "3")
+    {
+        Console.Write("Enter new delivery time (HH:mm): ");
+        string newTime = Console.ReadLine().Trim();
+        orderToModify.DeliveryDateTime = new DateTime(
+            orderToModify.DeliveryDateTime.Year,
+            orderToModify.DeliveryDateTime.Month,
+            orderToModify.DeliveryDateTime.Day,
+            int.Parse(newTime.Split(':')[0]),
+            int.Parse(newTime.Split(':')[1]),
+            0
+        );
+        Console.WriteLine("Delivery time updated.");
+    }
+    else
+    {
+        Console.WriteLine("Invalid choice.");
+        return;
+    }
+
+    Console.WriteLine("\nUpdated Order Details:");
+    orderToModify.DisplayOrderdFoodItems();
+    Console.WriteLine($"Delivery Address: {orderToModify.DeliveryAddress}");
+    Console.WriteLine($"Delivery Date/Time: {orderToModify.DeliveryDateTime:dd/MM/yyyy HH:mm}");
+    Console.WriteLine($"Total: ${orderToModify.OrderTotal:F2}");
 }
 
 
