@@ -46,19 +46,30 @@ void LoadFooditemsfile()
 
         FoodItem foodItem = new FoodItem(itemName, itemDesc, itemPrice, customise);
 
-        foreach (Restaurant restaurant in restaurants)
+        Restaurant foundRestaurant = null;
+
+        foreach (Restaurant r in restaurants)
         {
-            if (!restaurantMenus.ContainsKey(restaurantId))
+            if (r.RestaurantID == restaurantId)
             {
-                Menu menu = new Menu("Menu1", "Main Menu");
-                restaurant.AddMenu(menu);
-                restaurantMenus[restaurantId] = menu;
+                foundRestaurant = r;
+                break;
             }
-
-            restaurantMenus[restaurantId].AddFoodItem(foodItem);
-            break;
-
         }
+        if (foundRestaurant == null)
+        {
+            continue;
+        }
+
+        if (!restaurantMenus.ContainsKey(restaurantId))
+        {
+            Menu menu = new Menu("Menu1", "Main Menu");
+            foundRestaurant.AddMenu(menu);
+            restaurantMenus[restaurantId] = menu;
+        }
+
+        restaurantMenus[restaurantId].AddFoodItem(foodItem);
+
     }
 }
 
@@ -108,7 +119,7 @@ void ProcessOrder(Queue<Order> orderQueue, Stack<Order> refundStack)
                 i++;
             }
 
-            Console.WriteLine($"Delivery date/time: {order.DeliveryDateTime:DD/MM/yyyy hh:mm}");
+            Console.WriteLine($"Delivery date/time: {order.DeliveryDateTime:/MM/yyyy hh:mm}");
             Console.WriteLine($"Total Amount: ${order.CalculateOrderTotal()}");
             Console.WriteLine($"Order Status: {order.OrderStatus}");
 
@@ -231,7 +242,6 @@ void DeletingExistingOrder(Queue<Order> orderQueue, Stack<Order> refundStack)
 
 List<Customer> CUSTOMER = new List<Customer>();
 List<Order> ORDER = new List<Order>();
-List<Restaurant> RESTAURANTS = new List<Restaurant>();
 
 // Feature 2 //
 void LoadCustomerfile()
@@ -272,13 +282,8 @@ void LoadOrderFile()
         double totalAmount = double.Parse(parts[7].Trim());
         string status = parts[8].Trim();
 
-        // 🔍 find customer object
-        Customer customer = CUSTOMER
-            .FirstOrDefault(c => c.EmailAddress == customerEmail);
-
-        // 🔍 find restaurant object
-        Restaurant restaurant = RESTAURANTS
-            .FirstOrDefault(r => r.RestaurantID == restaurantId);
+        Customer customer = CUSTOMER.FirstOrDefault(c => c.EmailAddress == customerEmail);
+        Restaurant restaurant = restaurants.FirstOrDefault(r => r.RestaurantID == restaurantId);
 
         if (customer == null || restaurant == null)
             continue;
