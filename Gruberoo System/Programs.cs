@@ -15,12 +15,6 @@ Stack<Order> refundStack = new Stack<Order>();
 List<Customer> CUSTOMER = new List<Customer>();
 List<Order> ORDER = new List<Order>();
 
-// Doing features 1, 4, 6 & 8 //
-//==========================================================
-// Student Number : S10275142J
-// Student Name   : Kitson Chun Yi Fan
-// Partner Name   : Joel Ong Jia Jun 
-//==========================================================
 
 // Feature 1 //
 void LoadRestaurantsfile()
@@ -128,13 +122,8 @@ void ProcessOrder(Queue<Order> orderQueue, Stack<Order> refundStack)
             Console.WriteLine($"Customer: {order.Customer.CustomerName}");
             Console.WriteLine("Ordered Items:");
             
-
-
-            foreach (OrderedFoodItem item in order.OrderedFoodItems)
-            {
-                order.DisplayOrderdFoodItems();
-            }
-
+           order.DisplayOrderdFoodItems();
+            
             Console.WriteLine($"Delivery date/time: {order.DeliveryDateTime:dd/MM/yyyy hh:mm}");
             Console.WriteLine($"Total Amount: ${order.CalculateOrderTotal()}");
             Console.WriteLine($"Order Status: {order.OrderStatus}");
@@ -245,6 +234,7 @@ void DeletingExistingOrder(Queue<Order> orderQueue, Stack<Order> refundStack)
 
     Console.Write("Enter Order ID: ");
     int selectedorderid = Convert.ToInt32(Console.ReadLine());
+    Console.WriteLine();
 
     foreach (Order order in orderQueue)
     {
@@ -271,6 +261,7 @@ void DeletingExistingOrder(Queue<Order> orderQueue, Stack<Order> refundStack)
             {
                 order.OrderStatus = "Cancelled";
                 refundStack.Push(order);
+                Console.WriteLine();
                 Console.WriteLine($"Order {order.OrderId} cancelled. Refund of {order.OrderPaid} processed.");
             }
             else
@@ -441,6 +432,11 @@ void LoadOrderFile()
         ORDER.Add(order);
         customer.AddOrder(order);
         restaurant.order.Add(order);
+
+        if (status == "Pending")
+        {
+            orderQueue.Enqueue(order);
+        }
     }
 }
 
