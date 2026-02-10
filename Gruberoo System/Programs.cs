@@ -263,7 +263,6 @@ void ProcessOrder(Queue<Order> orderQueue, Stack<Order> refundStack)
             Console.WriteLine($"No orders found for Restaurant ID: {restaurantId}");
         }
 
-        // Restore queue
         while (newQueue.Count > 0)
         {
             orderQueue.Enqueue(newQueue.Dequeue());
@@ -626,7 +625,12 @@ void LoadOrderFile()
         }
         parts.Add(currentField);
 
-        int orderId = int.Parse(parts[0].Trim());
+        if (!int.TryParse(parts[0].Trim(), out int orderId))
+        {
+            Console.WriteLine($"Warning: Invalid OrderId '{parts[0]}'. Skipping this row.");
+            continue;
+        }
+
         string customerEmail = parts[1].Trim();
         string restaurantId = parts[2].Trim();
 
@@ -954,10 +958,16 @@ void CreateNewOrder()
     restaurant.order.Add(newOrder);
     orderQueue.Enqueue(newOrder);
 
-    string filePath = @"C:\Users\ongjj\OneDrive\Documents\GitHub\PRG2-Gruberoo-Food-Delivery-System\Gruberoo System\orders.csv";
+    //saved to project Directory orders.csv//
+    string projectDir = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.FullName;
+    string ordersPath = Path.Combine(projectDir, "orders.csv");
+    if (!File.Exists(ordersPath))
+    {
+        string header = "OrderId,CustomerEmail,RestaurantID,DeliveryDate,DeliveryTime,DeliveryAddress,CreatedDateTime,OrderTotal,OrderStatus,ItemsInOrder";
+        File.WriteAllText(ordersPath, header + Environment.NewLine);
+    }
     string orderLine = $"{newOrder.OrderId},{customer.EmailAddress},{restaurant.RestaurantID},{deliveryDateTime:dd/MM/yyyy},{deliveryDateTime:HH:mm},{deliveryAddress},{createdDateTime:dd/MM/yyyy HH:mm},{orderTotal:F2},{newOrder.OrderStatus},{itemsInOrder}";
-    File.AppendAllText(filePath, orderLine + Environment.NewLine);
-
+    File.AppendAllText(ordersPath, orderLine + Environment.NewLine);
     Console.WriteLine($"Order {newOrder.OrderId} created successfully! Status: {newOrder.OrderStatus}");
 }
 
@@ -1193,42 +1203,6 @@ void ModifyExistingOrder()
             0
         );
         Console.WriteLine($"Order: {OrderModify.OrderId} updated. Delivery Date/Time: {OrderModify.DeliveryDateTime:HH:mm}");
-
-        string filePath = @"C:\Users\ongjj\OneDrive\Documents\GitHub\PRG2-Gruberoo-Food-Delivery-System\Gruberoo System\orders.csv";
-
-        List<string> lines = File.ReadAllLines(filePath).ToList();
-
-        for (int i = 0; i < lines.Count; i++)
-        {
-            string[] parts = lines[i].Split(',');
-
-            // Check OrderID column
-            if (parts[0] == OrderModify.OrderId.ToString())
-            {
-                string itemsInOrder = string.Join(" | ",
-                    OrderModify.OrderedFoodItems.Select(item => $"{item.ItemName}, {item.QtyOrdered}")
-                );
-
-                string updatedLine =
-                    $"{OrderModify.OrderId}," +
-                    $"{OrderModify.Customer.EmailAddress}," +
-                    $"{OrderModify.Restaurant.RestaurantID}," +
-                    $"{OrderModify.DeliveryDateTime:dd/MM/yyyy}," +
-                    $"{OrderModify.DeliveryDateTime:HH:mm}," +
-                    $"{OrderModify.DeliveryAddress}," +
-                    $"{DateTime.Now:dd/MM/yyyy HH:mm}," +
-                    $"{OrderModify.CalculateOrderTotal():F2}," +
-                    $"{OrderModify.OrderStatus}," +
-                    $"{itemsInOrder}";
-
-                lines[i] = updatedLine;
-                break;
-            }
-        }
-
-        File.WriteAllLines(filePath, lines);
-
-        Console.WriteLine("Order updated in CSV successfully.");
     }
 }
 
