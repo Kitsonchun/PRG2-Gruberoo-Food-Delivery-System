@@ -276,6 +276,98 @@ void DeletingExistingOrder(Queue<Order> orderQueue, Stack<Order> refundStack)
     Console.WriteLine("No Orders found.");
 }
 
+// Advance Feature A //
+void BulkProccesing(Queue<Order> orderQueue)
+{
+    Console.WriteLine("Bulk Process Orders");
+    Console.WriteLine("===================");
+    Console.Write("Enter Restaurant ID: ");
+    string ID = Convert.ToString(Console.ReadLine());
+
+    int TotalPendingOrders = 0;
+
+    foreach (Order order in orderQueue)
+    {
+        if (order.OrderStatus == "Pending")
+        {
+            TotalPendingOrders++;
+        }
+    }
+
+    Console.WriteLine($"Total Pending Orders in Queue: {TotalPendingOrders}");
+
+    if (TotalPendingOrders == 0)
+    {
+        Console.WriteLine("No pending orders to process");
+    }
+
+    int orderproccessed = 0;
+    int preparingcount = 0;
+    int rejectedcount = 0;
+
+    Queue<Order> tempQueue = new Queue<Order>();
+    DateTime currentTime = DateTime.Now;
+
+    while (orderQueue.Count > 0)
+    {
+        Order order = orderQueue.Dequeue();
+
+        if (order.OrderStatus == "Pending")
+        {
+            double hoursDifference = (order.DeliveryDateTime - currentTime).TotalHours;
+
+            if (hoursDifference < 1)
+            {
+                order.OrderStatus = "Rejected";
+                refundStack.Push(order);
+                rejectedcount++;
+                Console.WriteLine($"Order {order.OrderId} rejected (delivery time < 1 hour)");
+            }
+
+            else
+            {
+                order.OrderStatus = "Preparing";
+                preparingcount++;
+                Console.WriteLine($"Order {order.OrderId} confirmed (status: Preparing)");
+            }
+
+            orderproccessed++;
+        }
+
+        if (order.OrderStatus != "Rejected")
+        {
+            tempQueue.Enqueue(order);
+        }
+    }
+
+    while (tempQueue.Count > 0)
+    {
+        orderQueue.Enqueue(tempQueue.Dequeue());
+    }
+
+    Console.WriteLine();
+    Console.WriteLine("Summary Statistics:");
+    Console.WriteLine("===================");
+    Console.WriteLine($"Orders Proccessed: {orderproccessed}");
+    Console.WriteLine($"Preparing: {preparingcount}");
+    Console.WriteLine($"Rejected: {rejectedcount}");
+
+    int totalOrders = 0;
+    foreach (Order orders in ORDER)
+    {
+        totalOrders++;
+    }
+
+    if (totalOrders > 0)
+    {
+        double percentage = (orderproccessed / totalOrders) * 100;
+        Console.WriteLine($"Percentage of automatically processed orders: {percentage:F2}%");
+    }
+
+}
+
+
+
 
 
 // Doing feature 2 , 3 , 5 ,7 //
