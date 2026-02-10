@@ -560,44 +560,47 @@ void CreateNewOrder()
 {
     Console.WriteLine("Create New Order");
     Console.WriteLine("================");
-
-    Console.Write("Enter Customer Email: ");
-    string email = Console.ReadLine().Trim();
-
     Customer customer = null;
 
-    for (int i = 0; i < CUSTOMER.Count; i++)
+    while (customer == null)
     {
-        if (CUSTOMER[i].EmailAddress == email)
+        Console.Write("Enter Customer Email: ");
+        string email = Console.ReadLine().Trim();
+
+        for (int i = 0; i < CUSTOMER.Count; i++)
         {
-            customer = CUSTOMER[i];
-            break;
+            if (CUSTOMER[i].EmailAddress == email)
+            {
+                customer = CUSTOMER[i];
+                break;
+            }
+        }
+
+        if (customer == null)
+        {
+            Console.WriteLine("Customer not found. Please try again.");
         }
     }
-    if (customer == null)
-    {
-        Console.WriteLine("Customer not found");
-        return;
-    }
-
-
-    Console.Write("Enter Restaurant ID: ");
-    string restaurantId = Console.ReadLine().Trim();
 
     Restaurant restaurant = null;
-
-    for (int i = 0; i < restaurants.Count; i++)
+    while (restaurant == null)
     {
-        if (restaurants[i].RestaurantID == restaurantId)
+        Console.Write("Enter Restaurant ID: ");
+        string restaurantId = Console.ReadLine().Trim();
+
+        foreach (var r in restaurants)
         {
-            restaurant = restaurants[i];
-            break;
+            if (r.RestaurantID == restaurantId)
+            {
+                restaurant = r;
+                break;
+            }
         }
-    }
 
-    if (restaurant == null)
-    {
-        Console.WriteLine("Restaurant not found"); return;
+        if (restaurant == null)
+        {
+            Console.WriteLine("Restaurant not found. Please enter a valid Restaurant ID.");
+        }
     }
 
     DateTime createdDateTime = DateTime.Now;
@@ -767,32 +770,35 @@ void ModifyExistingOrder()
     Console.WriteLine("Modify Order");
     Console.WriteLine("============");
 
-    Console.Write("Enter Customer Email: ");
-    string email = Console.ReadLine().Trim();
-
     Customer customer = null;
-    for (int i = 0; i < CUSTOMER.Count; i++)
+    while (customer == null)
     {
-        if (CUSTOMER[i].EmailAddress == email)
+        Console.Write("Enter Customer Email: ");
+        string email = Console.ReadLine().Trim();
+
+        foreach (var c in CUSTOMER)
         {
-            customer = CUSTOMER[i];
-            break;
+            if (c.EmailAddress == email)
+            {
+                customer = c;
+                break;
+            }
+        }
+
+        if (customer == null)
+        {
+            Console.WriteLine("Customer not found. Please try again.");
         }
     }
 
-    if (customer == null)
-    {
-        Console.WriteLine("Customer not found.");
-        return;
-    }
-
+    
     List<Order> PendingOrders = new List<Order>();
-    for (int i = 0; i < customer.Orders.Count; i++)
+    foreach (var o in customer.Orders)
     {
-        if (customer.Orders[i].OrderStatus == "Pending")
+        if (o.OrderStatus == "Pending")
         {
-            PendingOrders.Add(customer.Orders[i]);
-            Console.WriteLine($"Order ID: {customer.Orders[i].OrderId}");
+            PendingOrders.Add(o);
+            Console.WriteLine($"Order ID: {o.OrderId}");
         }
     }
 
@@ -802,29 +808,31 @@ void ModifyExistingOrder()
         return;
     }
 
-    Console.Write("Enter Order ID to modify: ");
-    if (!int.TryParse(Console.ReadLine().Trim(), out int orderId))
-    {
-        Console.WriteLine("Invalid Order ID.");
-        return;
-    }
-
     Order OrderModify = null;
-    for (int i = 0; i < PendingOrders.Count; i++)
+    while (OrderModify == null)
     {
-        if (PendingOrders[i].OrderId == orderId)
+        Console.Write("Enter Order ID to modify: ");
+        if (!int.TryParse(Console.ReadLine().Trim(), out int orderId))
         {
-            OrderModify = PendingOrders[i];
-            break;
+            Console.WriteLine("Invalid Order ID. Must be a number.");
+            continue;
+        }
+
+        foreach (var o in PendingOrders)
+        {
+            if (o.OrderId == orderId)
+            {
+                OrderModify = o;
+                break;
+            }
+        }
+
+        if (OrderModify == null)
+        {
+            Console.WriteLine("Order not found in pending orders. Try again.");
         }
     }
-
-    if (OrderModify == null)
-    {
-        Console.WriteLine("Order not found.");
-        return;
-    }
-
+    double oldTotal = OrderModify.CalculateOrderTotal();
     Console.WriteLine("Order Items:");
     OrderModify.DisplayOrderdFoodItems();
     Console.WriteLine("Delivery Address:");
@@ -832,21 +840,22 @@ void ModifyExistingOrder()
     Console.WriteLine($"Delivery Date/Time:");
     Console.WriteLine($"{OrderModify.DeliveryDateTime:dd/MM/yyyy HH:mm}");
 
-    Console.WriteLine();
-    Console.Write("Modify: [1] Items [2] Address [3] Delivery Time: ");
-    string modChoice = Console.ReadLine().Trim();
+    string modChoice = "";
+    while (modChoice != "1" && modChoice != "2" && modChoice != "3")
+    {
+        Console.WriteLine();
+        Console.Write("Modify: [1] Items [2] Address [3] Delivery Time: ");
+        modChoice = Console.ReadLine().Trim();
+
+        if (modChoice != "1" && modChoice != "2" && modChoice != "3")
+            Console.WriteLine("Invalid choice. Please enter 1, 2, or 3.");
+    }
 
     if (modChoice == "1")
     {
         List<FoodItem> availableItems = new List<FoodItem>();
-        for (int i = 0; i < OrderModify.Restaurant.Menus.Count; i++)
-        {
-            Menu menu = OrderModify.Restaurant.Menus[i];
-            for (int j = 0; j < menu.FoodItems.Count; j++)
-            {
-                availableItems.Add(menu.FoodItems[j]);
-            }
-        }
+        foreach (var menu in OrderModify.Restaurant.Menus)
+            availableItems.AddRange(menu.FoodItems);
 
         Console.WriteLine("Available Food Items:");
         for (int i = 0; i < availableItems.Count; i++)
@@ -854,12 +863,16 @@ void ModifyExistingOrder()
             Console.WriteLine($"{i + 1}. {availableItems[i].ItemName} - ${availableItems[i].ItemPrice:F2}");
         }
 
-        Console.WriteLine("Modify Order Items:");
-        Console.Write("1. Add Item  2. Remove Item");
-        if (!int.TryParse(Console.ReadLine(), out int itemChoice))
+        int itemChoice = 0;
+        while (itemChoice != 1 && itemChoice != 2)
         {
-            Console.WriteLine("Invalid choice.");
-            return;
+            Console.WriteLine("Modify Order Items:");
+            Console.Write("1. Add Item  2. Remove Item: ");
+            if (!int.TryParse(Console.ReadLine(), out itemChoice) || (itemChoice != 1 && itemChoice != 2))
+            {
+                Console.WriteLine("Invalid choice. Enter 1 or 2.");
+                itemChoice = 0;
+            }
         }
 
         if (itemChoice == 1)
@@ -874,16 +887,15 @@ void ModifyExistingOrder()
                 }
                 if (itemNo == 0) break;
 
-                Console.Write("Enter quantity: ");
-                if (!int.TryParse(Console.ReadLine(), out int qty) || qty <= 0)
+                int qty = 0;
+                while (qty <= 0)
                 {
-                    Console.WriteLine("Invalid quantity.");
-                    continue;
+                    Console.Write("Enter quantity: ");
+                    if (!int.TryParse(Console.ReadLine(), out qty) || qty <= 0)
+                        Console.WriteLine("Invalid quantity. Must be a positive number.");
                 }
 
                 FoodItem selectedItem = availableItems[itemNo - 1];
-
-                
                 OrderModify.AddOrderFoodItem(new OrderedFoodItem(
                     selectedItem.ItemName,
                     selectedItem.ItemDesc,
@@ -892,9 +904,7 @@ void ModifyExistingOrder()
                     qty
                 ));
 
-
-                Console.WriteLine();
-                Console.WriteLine($"Order: {OrderModify.OrderId} updated. {qty} x {selectedItem.ItemName} added");
+                Console.WriteLine($"{qty} x {selectedItem.ItemName} added to Order {OrderModify.OrderId}");
             }
         }
         else if (itemChoice == 2)
@@ -922,29 +932,56 @@ void ModifyExistingOrder()
                 }
                 if (removeNo == 0) break;
 
-                
                 if (OrderModify.RemoveOrderFoodItem(items[removeNo - 1]))
                     Console.WriteLine($"{items[removeNo - 1].ItemName} removed.");
             }
         }
-        else
-        {
-            Console.WriteLine("Invalid choice.");
-            return;
-        }
-
-        
         double newTotal = OrderModify.CalculateOrderTotal();
         Console.WriteLine($"Order updated. New total: ${newTotal:F2}");
+        double difference = newTotal - oldTotal;
+
+        if (difference > 0)
+        {
+            Console.WriteLine($"Additional payment required: ${difference:F2}");
+
+            string paymentMethod = "";
+            while (true)
+            {
+                Console.Write("[CC] Credit Card / [PP] PayPal / [CD] Cash on Delivery: ");
+                paymentMethod = Console.ReadLine().Trim().ToUpper();
+
+                if (paymentMethod == "CC" || paymentMethod == "PP" || paymentMethod == "CD")
+                    break;
+
+                Console.WriteLine("Invalid payment method.");
+            }
+
+            OrderModify.OrderPaymentMethod = paymentMethod;
+            Console.WriteLine($"Payment of ${difference:F2} successful using {paymentMethod}");
+        }
+        else if (difference < 0)
+        {
+            Console.WriteLine($"New total is lower. Difference: ${Math.Abs(difference):F2}");
+        }
+        else
+        {
+            Console.WriteLine("Total unchanged. No payment needed.");
+        }
     }
     else if (modChoice == "2")
     {
-        Console.Write("Enter new delivery address: ");
-        OrderModify.DeliveryAddress = Console.ReadLine().Trim();
-
-        Console.WriteLine();
+        string newAddress = "";
+        while (string.IsNullOrWhiteSpace(newAddress))
+        {
+            Console.Write("Enter new delivery address: ");
+            newAddress = Console.ReadLine().Trim();
+            if (string.IsNullOrWhiteSpace(newAddress))
+                Console.WriteLine("Delivery address cannot be empty.");
+        }
+        OrderModify.DeliveryAddress = newAddress;
         Console.WriteLine($"Order: {OrderModify.OrderId} updated. Delivery Address: {OrderModify.DeliveryAddress}");
     }
+
     else if (modChoice == "3")
     {
         Console.Write("Enter new delivery time (HH:mm): ");
@@ -957,18 +994,46 @@ void ModifyExistingOrder()
             int.Parse(newTime.Split(':')[1]),
             0
         );
-
-        Console.WriteLine();
         Console.WriteLine($"Order: {OrderModify.OrderId} updated. Delivery Date/Time: {OrderModify.DeliveryDateTime:HH:mm}");
-    }
 
-    else
-    {
-        Console.WriteLine("Invalid choice.");
-        return;
+        string filePath = @"C:\Users\ongjj\OneDrive\Documents\GitHub\PRG2-Gruberoo-Food-Delivery-System\Gruberoo System\orders.csv";
+
+        List<string> lines = File.ReadAllLines(filePath).ToList();
+
+        for (int i = 0; i < lines.Count; i++)
+        {
+            string[] parts = lines[i].Split(',');
+
+            // Check OrderID column
+            if (parts[0] == OrderModify.OrderId.ToString())
+            {
+                string itemsInOrder = string.Join(" | ",
+                    OrderModify.OrderedFoodItems.Select(item => $"{item.ItemName}, {item.QtyOrdered}")
+                );
+
+                string updatedLine =
+                    $"{OrderModify.OrderId}," +
+                    $"{OrderModify.Customer.EmailAddress}," +
+                    $"{OrderModify.Restaurant.RestaurantID}," +
+                    $"{OrderModify.DeliveryDateTime:dd/MM/yyyy}," +
+                    $"{OrderModify.DeliveryDateTime:HH:mm}," +
+                    $"{OrderModify.DeliveryAddress}," +
+                    $"{DateTime.Now:dd/MM/yyyy HH:mm}," +
+                    $"{OrderModify.CalculateOrderTotal():F2}," +
+                    $"{OrderModify.OrderStatus}," +
+                    $"{itemsInOrder}";
+
+                lines[i] = updatedLine;
+                break;
+            }
+        }
+
+        File.WriteAllLines(filePath, lines);
+
+        Console.WriteLine("Order updated in CSV successfully.");
     }
- 
 }
+
 
 //Advanced Feature B//
 void TotelGruberooEarnings()
