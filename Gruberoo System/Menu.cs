@@ -15,7 +15,12 @@ public class Menu
 
 	private List<FoodItem> fooditems = new List<FoodItem>();
 
-	public Restaurant Restaurant { get; set; }
+    public List<FoodItem> FoodItems
+    {
+        get { return new List<FoodItem>(fooditems); }
+    }
+
+    public Restaurant Restaurant { get; set; }
 
     public Menu(string menuid, string menuname)
 	{
