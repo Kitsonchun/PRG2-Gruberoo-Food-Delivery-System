@@ -2,7 +2,7 @@
 using System.Linq.Expressions;
 
 
-// Doing features 1, 4, 6 & 8 //
+// Doing features 1, 4, 6, 8 & A //
 //==========================================================
 // Student Number : S10275142J
 // Student Name   : Kitson Chun Yi Fan
@@ -443,8 +443,6 @@ void DeletingExistingOrder(Queue<Order> orderQueue, Stack<Order> refundStack)
         Console.WriteLine("Delete order operation completed.");
     }
 }
-
-
 
 
 // Advance Feature A //
